@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Joi from "joi";
+import { v2 as cloudinary } from "cloudinary";
 import User from "../models/user.model";
 
 dotenv.config();
@@ -194,7 +195,21 @@ export default new (class UserController {
       const { email } = res.locals.loginSession;
       type QueryResult = any[];
 
-      const profile_image = req.file?.path;
+      cloudinary.config({
+        cloud_name: process.env.CLOUD_NAME,
+        api_key: process.env.API_KEY,
+        api_secret: process.env.API_SECRET,
+      })
+
+      let profile_image = ""
+
+      if(req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "NUTECH/profile_image",
+        });
+
+        profile_image = result.secure_url
+      }
 
       const userData = {
         email,
