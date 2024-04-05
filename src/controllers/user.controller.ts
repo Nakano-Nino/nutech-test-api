@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Joi from "joi";
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 import User from "../models/user.model";
 
 dotenv.config();
@@ -135,9 +136,13 @@ export default new (class UserController {
           status: 200,
           message: "Login Sukses",
           data: {
-            token: jwt.sign({ email: user[0][0].email }, `${process.env.SECRET_KEY}`, {
-              expiresIn: "12h",
-            }),
+            token: jwt.sign(
+              { email: user[0][0].email },
+              `${process.env.SECRET_KEY}`,
+              {
+                expiresIn: "12h",
+              }
+            ),
           },
         });
       }
@@ -199,16 +204,16 @@ export default new (class UserController {
         cloud_name: process.env.CLOUD_NAME,
         api_key: process.env.API_KEY,
         api_secret: process.env.API_SECRET,
-      })
+      });
 
-      let profile_image = ""
+      let profile_image = "";
 
-      if(req.file) {
+      if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "NUTECH/profile_image",
         });
-
-        profile_image = result.secure_url
+        profile_image = result.secure_url;
+        fs.unlinkSync(req.file.path);
       }
 
       const userData = {
