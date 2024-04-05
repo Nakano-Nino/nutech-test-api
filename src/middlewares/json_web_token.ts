@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import dotenv from "dotenv"
+
+dotenv.config();
 
 class Auth {
     Authentication(req: Request, res: Response, next: NextFunction){
@@ -17,7 +20,7 @@ class Auth {
             const token = authHeader.split(' ')[1]
 
             try {
-                const loginSession = jwt.verify(token, "nutech")
+                const loginSession = jwt.verify(token, `${process.env.SECRET_KEY}`)
 
                 res.locals.loginSession = loginSession
                 next()

@@ -2,8 +2,11 @@ import { Request, Response } from "express";
 import { connect } from "../db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import Joi from "joi";
 import User from "../models/user.model";
+
+dotenv.config();
 
 export default new (class UserController {
   async getAllUsers(req: Request, res: Response) {
@@ -130,7 +133,7 @@ export default new (class UserController {
           status: 200,
           message: "Login Sukses",
           data: {
-            token: jwt.sign({ email: user[0][0].email }, "nutech", {
+            token: jwt.sign({ email: user[0][0].email }, `${process.env.SECRET_KEY}`, {
               expiresIn: "12h",
             }),
           },
