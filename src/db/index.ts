@@ -2,10 +2,11 @@ import { createPool } from "mysql2/promise";
 
 export async function connect() {
   const connection = createPool({
-    host: "localhost",
+    host: "viaduct.proxy.rlwy.net",
+    port: 19881,
     user: "root",
-    password: "",
-    database: "nutech_test_db",
+    password: "JsAnUlPRJRqlWPqCtgLwycKLdYbyrQrJ",
+    database: "railway",
     connectionLimit: 10,
   });
 
