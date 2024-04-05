@@ -39,6 +39,7 @@ export default new (class UserController {
 
   async register(req: Request, res: Response) {
     const connection = await connect();
+    type QueryResult = any[];
     const newUser: User = req.body;
 
     const schema = Joi.object({
@@ -56,12 +57,12 @@ export default new (class UserController {
         data: null,
       });
 
-    const users = await connection.query(
+    const users: QueryResult = await connection.query(
       "SELECT * FROM users WHERE email = ?",
       [newUser.email]
     );
 
-    if (users[0] != null) {
+    if (users[0].length > 0) {
       return res.status(409).json({
         status: 409,
         message: "Email sudah digunakan",
